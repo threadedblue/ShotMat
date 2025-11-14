@@ -1,0 +1,18 @@
+# Python
+api/.venv/
+__pycache__/
+*.pyc
+
+# Node / JS
+ui-web/**/node_modules/
+ui-web/**/.vite/
+ui-web/**/dist/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Logs
+logs/

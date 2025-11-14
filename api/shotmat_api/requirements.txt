@@ -1,0 +1,21 @@
+# --- web framework ---
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# --- data models ---
+pydantic==2.7.4
+pydantic-settings==2.3.4
+
+# --- ML / image operations ---
+mlx==0.29.4              # Apple MLX (requires macOS + M-series)
+Pillow==10.3.0
+numpy==1.26.4
+
+# --- utilities ---
+python-multipart==0.0.9  # For file uploads (img2img, audio assets)
+PyYAML==6.0.1            # For project.yaml, shots.yaml
+
+# --- optional (useful but not required) ---
+# opencv-python==4.9.0.80   # If you want more image tools
+# rich==13.7.1              # Pretty terminal logging
+# loguru==0.7.2             # Nicer logging
