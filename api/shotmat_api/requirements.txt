@@ -10,6 +10,10 @@ pydantic-settings==2.3.4
 mlx==0.29.4              # Apple MLX (requires macOS + M-series)
 Pillow==10.3.0
 numpy==1.26.4
+huggingface-hub
+regex
+tqdm
+sentencepiece
 
 # --- utilities ---
 python-multipart==0.0.9  # For file uploads (img2img, audio assets)
