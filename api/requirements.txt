@@ -14,6 +14,7 @@ huggingface-hub
 regex
 tqdm
 sentencepiece
+flux
 
 # --- utilities ---
 python-multipart==0.0.9  # For file uploads (img2img, audio assets)

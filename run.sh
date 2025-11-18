@@ -1,54 +1,45 @@
-#!/usr/bin/env bash
-set -e
+#!/bin/bash
 
-# Resolve the ShotMat root directory (where this script lives)
-ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# This script launches the ShotMat application components.
+#
+# Usage:
+#   ./run.sh [mode]
+#
+# Modes:
+#   all (default): Launches both the API and the Flutter UI.
+#   api:           Launches only the FastAPI backend.
 
-# 1. Core paths
-export SHOTMAT_DATA="$HOME/ShotMatData"
-export SHOTMAT_PROJECTS="$HOME/ShotMatProjects"
-export SHOTMAT_PORT=8000
+# Function to kill background processes on exit
+cleanup() {
+    echo "Shutting down background processes..."
+    if [ -n "$API_PID" ]; then
+        kill $API_PID
+        echo "API server stopped."
+    fi
+    exit 0
+}
 
-mkdir -p "$SHOTMAT_DATA" "$SHOTMAT_PROJECTS"
+# Trap Ctrl+C (INT) and termination (TERM) signals to run cleanup
+trap cleanup INT TERM
 
-################################################################################
-# 2. Start FastAPI in the background
-################################################################################
-echo "Starting FastAPI microservice..."
+# Default to 'all' mode if no argument is provided
+MODE=${1:-all}
 
-cd "$ROOT_DIR/api"
-
-if [ ! -d ".venv" ]; then
-  echo "No .venv in api/. Run setup first (python -m venv .venv && pip install -r requirements.txt)."
-  exit 1
+if [[ "$MODE" == "api" || "$MODE" == "all" ]]; then
+    echo "Starting API server..."
+    (cd api && uvicorn shotmat_api.main:app --reload) &
+    API_PID=$!
 fi
 
-# shellcheck disable=SC1091
-source .venv/bin/activate
+if [[ "$MODE" == "all" ]]; then
+    echo "Starting Flutter UI..."
+    (cd ui_web && flutter run)
+    # When flutter run exits, cleanup will be called by the trap
+    cleanup
+fi
 
-uvicorn shotmat_api.main:app \
-  --host 127.0.0.1 \
-  --port "$SHOTMAT_PORT" \
-  --reload &
-API_PID=$!
-
-echo "FastAPI running on http://127.0.0.1:$SHOTMAT_PORT (PID: $API_PID)"
-
-################################################################################
-# 3. Run Flutter Web UI (foreground)
-################################################################################
-echo "Starting Flutter Web UI in Chrome..."
-
-cd "$ROOT_DIR/ui_web"
-
-# Enable web support (safe to run repeatedly)
-flutter config --enable-web >/dev/null 2>&1
-
-# This stays in the foreground so you see all output
-flutter run -d chrome
-
-################################################################################
-# 4. Cleanup when Flutter exits
-################################################################################
-echo "Flutter exited, stopping FastAPI (PID: $API_PID)..."
-kill "$API_PID" || true
+if [[ "$MODE" == "api" ]]; then
+    echo "API server is running with PID $API_PID."
+    echo "Press Ctrl+C to stop the server."
+    wait $API_PID
+fi

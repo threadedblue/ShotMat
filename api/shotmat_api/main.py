@@ -1,8 +1,10 @@
-from fastapi import FastAPI, BackgroundTasks
+import base64
+from io import BytesIO
+from fastapi import FastAPI, BackgroundTasks, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-# from .core.flux_txt2Img_request import FluxTxt2Img
 import threading
+from .core.flux_txt2Img_request import FluxTxt2Im
 
 app = FastAPI()
 
@@ -27,7 +29,7 @@ model_loaded = False
 
 def load_model():
     global flux_generator, model_loaded
-#     flux_generator = FluxTxt2Img()
+    flux_generator = FluxTxt2Im()
     model_loaded = True
 
 @app.on_event("startup")
@@ -39,10 +41,14 @@ async def startup_event():
 def health():
     return {"ok": True, "model_loaded": model_loaded}
 
-# @app.post("/txt2img")
-# def txt2img(request: Txt2ImgRequest):
-#     if not model_loaded:
-#         return {"error": "Model not loaded yet"}, 503
-        
-#     image_data = flux_generator.generate(request.prompt)
-#     return {"image": image_data}
+@app.post("/txt2img")
+def txt2img(request: Txt2ImgRequest):
+    print(f"txt2img endpoint called with prompt: '{request.prompt}'")
+
+    if not model_loaded:
+        return Response(content='{"error": "Model not loaded yet"}', status_code=status.HTTP_503_SERVICE_UNAVAILABLE, media_type="application/json")
+
+    image_b64 = flux_generator.generate(request.prompt)
+    image_bytes = base64.b64decode(image_b64)
+    
+    return Response(content=image_bytes, media_type="image/png")

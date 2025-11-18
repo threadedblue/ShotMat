@@ -4,7 +4,7 @@
 START_DIR="$(pwd)"
 
 # Target directory where requirements.txt is located
-API_DIR="$HOME/ShotMat.Wk/shotmat/api/shotmat_api"
+API_DIR="$HOME/ShotMat.Wk/shotmat/api"
 REQ_FILE="$API_DIR/requirements.txt"
 
 # Check directory exists
