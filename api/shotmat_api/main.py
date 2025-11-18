@@ -7,7 +7,7 @@ import threading
 from PIL import Image
 from .core.flux_txt2Img_request import FluxTxt2Im
 from .core.flux_img2Img_request import FluxImg2Im
-from .core.tiposr_superres_request import TipoSRSuperRes
+from .core.tiposr_img2mesh_request import TipoSRSuperRes
 
 app = FastAPI()
 
@@ -41,7 +41,6 @@ tiposr_generator = None
 model_loaded = False
 
 def load_model():
-    global flux_generator, flux_img_generator, model_loaded
     global flux_generator, flux_img_generator, tiposr_generator, model_loaded
     flux_generator = FluxTxt2Im(model="schnell")
     flux_img_generator = FluxImg2Im(pipeline=flux_generator.pipeline)
