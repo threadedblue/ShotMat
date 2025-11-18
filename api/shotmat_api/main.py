@@ -7,6 +7,7 @@ import threading
 from PIL import Image
 from .core.flux_txt2Img_request import FluxTxt2Im
 from .core.flux_img2Img_request import FluxImg2Im
+from .core.tiposr_superres_request import TipoSRSuperRes
 
 app = FastAPI()
 
@@ -31,14 +32,24 @@ class Img2ImgRequest(BaseModel):
     image: str  # Base64 encoded image
     strength: float = 0.7
 
+class SuperResRequest(BaseModel):
+    image: str # Base64 encoded image
+
 flux_generator = None
 flux_img_generator = None
+tiposr_generator = None
 model_loaded = False
 
 def load_model():
     global flux_generator, flux_img_generator, model_loaded
+    global flux_generator, flux_img_generator, tiposr_generator, model_loaded
     flux_generator = FluxTxt2Im(model="schnell")
     flux_img_generator = FluxImg2Im(pipeline=flux_generator.pipeline)
+    
+    # Initialize the TipoSR model.
+    # You will need to provide the path to your trained model weights.
+    tiposr_generator = TipoSRSuperRes(model_path="path/to/tiposr/weights.npz")
+
     model_loaded = True
 
 @app.on_event("startup")
@@ -73,5 +84,19 @@ def img2img(request: Img2ImgRequest):
     image = Image.open(BytesIO(image_bytes))
 
     image_b64 = flux_img_generator.generate(request.prompt, image, strength=request.strength)
+    image_bytes = base64.b64decode(image_b64)
+    return Response(content=image_bytes, media_type="image/png")
+
+@app.post("/super-resolution")
+def super_resolution(request: SuperResRequest):
+    print(f"super-resolution endpoint called.")
+
+    if not model_loaded:
+        return Response(content='{"error": "Model not loaded yet"}', status_code=status.HTTP_503_SERVICE_UNAVAILABLE, media_type="application/json")
+
+    image_bytes = base64.b64decode(request.image)
+    image = Image.open(BytesIO(image_bytes))
+
+    image_b64 = tiposr_generator.upscale(image)
     image_bytes = base64.b64decode(image_b64)
     return Response(content=image_bytes, media_type="image/png")
