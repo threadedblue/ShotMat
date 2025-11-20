@@ -5,7 +5,7 @@ import mlx.nn as nn
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from .flux import FluxPipeline
+from .flux_pipeline import FluxPipeline
 
 def to_latent_size(image_size):
     h, w = image_size
@@ -21,7 +21,7 @@ def to_latent_size(image_size):
     # The new autoencoder has a downsampling factor of 4
     return (h // 4, w // 4)
 
-class FluxTxt2Im:
+class FluxTxt2ImgService:
     def __init__(self, model="schnell", t5_padding=False):
         # The new pipeline takes the model name directly
         self.pipeline = FluxPipeline(name=f"flux-{model}", t5_padding=t5_padding)

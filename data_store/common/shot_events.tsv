@@ -1,0 +1,10 @@
+name	service	param_key	param_value
+img2img	/img2img	prompt	a beautiful landscape
+img2img	/img2img	input	URL to file
+img2img	/img2img	output	URL to file
+img2img	/img2img	strength	0.7
+img2img	/img2img	steps	10
+txt2img	/txt2img	prompt	a photograph of an astronaut riding a horse
+txt2img	/img2img	output	URL to file
+txt2img	/txt2img	steps	2
+txt2img	/txt2img	guidance	4.0
