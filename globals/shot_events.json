@@ -1,0 +1,23 @@
+{
+    "shot_events": [
+        {
+            "name": "img2img",
+            "service": "/img2img",
+            "params": {
+                "prompt": "a beautiful landscape",
+                "image": "path/to/input/image.png",
+                "strength": 0.7,
+                "steps": 10
+            }
+        },
+        {
+            "name": "txt2img",
+            "service": "/txt2img",
+            "params": {
+                "prompt": "a photograph of an astronaut riding a horse",
+                "steps": 2,
+                "guidance": 4.0
+            }
+        }
+    ]
+}

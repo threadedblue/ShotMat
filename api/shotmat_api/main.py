@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import threading
 from PIL import Image
-from .core.flux_txt2Img_request import FluxTxt2Im
-from .core.flux_img2Img_request import FluxImg2Im
-from .core.tiposr_img2mesh_request import TipoSRSuperRes
+from .routes.flux_txt2Img_request import FluxTxt2Im
+from .routes.flux_img2Img_request import FluxImg2Im
+from .routes.tiposr_img2mesh_request import TipoSRImg2Mesh
 
 app = FastAPI()
 

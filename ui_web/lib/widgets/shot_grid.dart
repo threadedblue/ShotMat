@@ -39,15 +39,15 @@ class _ShotGridState extends State<ShotGrid> {
       children: [
         // Header row (fixed)
         Container(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.primary, // Use primary color for header background
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Row(
-            children: const [
-              SizedBox(width: 40, child: Text('#', style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(flex: 3, child: Text('Input', style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(flex: 2, child: Text('MLX Args', style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(flex: 3, child: Text('Output', style: TextStyle(fontWeight: FontWeight.bold))),
-              SizedBox(width: 96, child: Text('Actions', style: TextStyle(fontWeight: FontWeight.bold))),
+            children: [
+              SizedBox(width: 40, child: Text('#', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary))),
+              Expanded(flex: 3, child: Text('Input', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary))),
+              Expanded(flex: 2, child: Text('MLX Args', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary))),
+              Expanded(flex: 3, child: Text('Output', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary))),
+              SizedBox(width: 96, child: Text('Actions', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary))),
             ],
           ),
         ),
@@ -119,6 +119,7 @@ class _ShotGridState extends State<ShotGrid> {
                           IconButton(
                             icon: const Icon(Icons.play_arrow),
                             tooltip: 'Run row',
+                            color: Theme.of(context).colorScheme.primary, // Make the run button stand out
                             onPressed: () => _runRow(index),
                           ),
                         ],
