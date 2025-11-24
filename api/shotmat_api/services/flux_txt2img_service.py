@@ -4,8 +4,8 @@ import mlx.core as mx
 import mlx.nn as nn
 import numpy as np
 from PIL import Image
-from tqdm import tqdm
-from .flux_pipeline import FluxPipeline
+from tqdm import tqdm 
+from shotmat.core.mlx.flux import FluxPipeline
 
 def to_latent_size(image_size):
     h, w = image_size

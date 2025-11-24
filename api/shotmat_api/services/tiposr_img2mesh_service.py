@@ -4,10 +4,6 @@ from io import BytesIO
 import mlx.core as mx
 import numpy as np
 from PIL import Image
-
-from .tiposr_pipeline import TipoSR
-
-
 class TipoSRImg2MeshService:
     def __init__(self, model_path: str, upscale_factor: int = 4):
         self.model = TipoSR(upscale_factor=upscale_factor)

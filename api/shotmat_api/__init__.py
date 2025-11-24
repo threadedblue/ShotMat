@@ -1,1 +1,1 @@
-from .services.mesh.img2mesh import TipoSR
+# from .services.mesh.img2mesh import TipoSR

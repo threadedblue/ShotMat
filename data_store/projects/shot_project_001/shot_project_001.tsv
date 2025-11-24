@@ -1,0 +1,4 @@
+project	shot_id	generator	prompt	n_prompt	input	output 
+shot_project_001	shot_001	flux_txt2img_service.py	Eight year old boy 	background	none	media/eight_boy.png
+shot_project_001	shot_002	flux_img2img_service.py	Make hair black	none	media/eight_boy.png	media/eight_boy2.png
+shot_project_001	shot_003	tiposr_img2mesh_service.py	none	none	media/eight_boy3.png	media/eight_boy2.obj
