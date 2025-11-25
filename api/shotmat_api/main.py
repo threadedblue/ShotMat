@@ -17,7 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import threading
 
 # Import all the routers that define your API endpoints
-from .routes import generation, shot_events_request
+from .routes import admin, generation, shot_events_request
 from .services.flux_txt2img_service import FluxTxt2ImgService
 from .services.flux_img2img_service import FluxImg2ImgService
 from .services.tiposr_img2mesh_service import TipoSRImg2MeshService
@@ -66,4 +66,5 @@ def health():
 
 # Include all routers in the app, with prefixes for organization
 app.include_router(generation.router, tags=["Image Generation"])
+app.include_router(admin.router, tags=["Administer app."])
 app.include_router(shot_events_request.router, prefix="/api/shot_events_request", tags=["Shot Events"])

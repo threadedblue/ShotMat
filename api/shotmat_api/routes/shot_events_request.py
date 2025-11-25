@@ -5,7 +5,7 @@ from ..services import shot_events_service
 
 router = APIRouter()
 
-@router.get("/shot_event_request")
+@router.post("/shot_event_request")
 def shot_event_service():
     """
     Loads the shot_events.tsv file and returns its contents

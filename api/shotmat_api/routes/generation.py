@@ -3,6 +3,7 @@ from io import BytesIO
 from fastapi import APIRouter, Request, Response, status
 from pydantic import BaseModel
 from PIL import Image
+from ..services import shot_project_service, shot_events_service
 
 router = APIRouter()
 
