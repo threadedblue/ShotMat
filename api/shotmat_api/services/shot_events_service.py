@@ -1,6 +1,6 @@
 import D4M.assoc as d4m_assoc
 from typing import List, Dict, Any, Optional
-from constants import SHOT_EVENT_HEADER, PROJECT_HEADER, DELIMITER
+from ..constants import SHOT_EVENT_HEADER, PROJECT_HEADER, DELIMITER
 
 def load_tsv_to_assoc(file_path: str) -> Optional[d4m_assoc.Assoc]:
     """
@@ -94,6 +94,3 @@ def assoc_to_json_structure(assoc_array: d4m_assoc.Assoc) -> Dict[str, Any]:
     json_rows = list(reconstructed_rows.values())
 
     return {"cols": json_cols, "rows": json_rows}
-
-
-
