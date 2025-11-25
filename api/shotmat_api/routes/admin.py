@@ -59,6 +59,30 @@ def delete_project(project_name: str):
     # TODO: Implement service logic to delete a project
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Delete project not implemented")
 
+# --- Shot Events Data Retrieval ---
+
+@router.get("/events")
+def get_all_shot_events():
+    """
+    Loads the shot_events.tsv file and returns its contents
+    in a structured JSON format.
+    """
+    try:
+        # Construct the path to the TSV file relative to the project root.
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # Navigate up from routes -> shotmat_api -> api -> shotmat -> ShotMat.Wk
+        project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..', '..'))
+        file_path = os.path.join(project_root, 'data_store/common/shot_events.tsv')
+
+        assoc_data = shot_events_service.load_matrix_tsv_to_assoc(file_path)
+        if assoc_data is None:
+            raise HTTPException(status_code=404, detail=f"Data file not found at {file_path}")
+
+        json_output = shot_events_service.assoc_to_json_structure(assoc_data)
+        return json_output
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
 # --- Shot Event CRUD ---
 # These would likely operate on the shot_events.tsv file or a database.
 
