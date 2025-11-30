@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 # Assuming d4m_assoc is available in the environment.
 # If it's in a specific package, the import might need adjustment.
 import D4M.assoc as d4m_assoc
+from ..persistence.d4m_data_io import writejson, readjson
 
 # --- Data Models ---
 
@@ -107,6 +108,43 @@ class ProjectService:
         tsv_path = self._get_project_tsv_path(project.project_name)
         d4m_assoc.writecsv(assoc, tsv_path)
 
+    def save_project_as_json(self, project: ShotProject) -> Dict[str, Any]:
+        """
+        Serializes the ShotProject model to the canonical JSON format for an Assoc.
+
+        Args:
+            project: The ShotProject to serialize.
+
+        Returns:
+            A dictionary representing the project data in the canonical AA format.
+        """
+        assoc = d4m_assoc.Assoc('', ','.join(self._TSV_COLUMNS), '')
+        for shot in project.shots:
+            row_key = shot.id
+            assoc.set(row_key, "shot_id", shot.id)
+            assoc.set(row_key, "input_text", shot.input_text)
+            assoc.set(row_key, "mlx_args_json", json.dumps(shot.mlx_args))
+            assoc.set(row_key, "output_url", shot.output_url)
+        return writejson(assoc)
+
+    def load_project_from_json(self, project_name: str, data: Dict[str, Any]) -> ShotProject:
+        """
+        Deserializes project data from the canonical JSON format into a ShotProject model.
+
+        Args:
+            project_name: The name of the project.
+            data: A dictionary with the project data in the canonical AA format.
+
+        Returns:
+            A ShotProject instance.
+        """
+        assoc = readjson(data)
+        shots = []
+        for shot_id in assoc.rows():
+            mlx_args_json = assoc.get(shot_id, "mlx_args_json")
+            shots.append(Shot(id=shot_id, input_text=assoc.get(shot_id, "input_text") or "", mlx_args=json.loads(mlx_args_json) if mlx_args_json else {}, output_url=assoc.get(shot_id, "output_url") or ""))
+        return ShotProject(project_name=project_name, shots=shots)
+
     def add_shot(
         self,
         project_name: str,
@@ -137,7 +175,7 @@ class ProjectService:
             f.write(image_bytes)
 
         # Set the public-facing URL for the shot
-        new_shot.output_url = f"/media/{project_name}/{filename}"
+        new_shot.output_url = f"/projects/{project_name}/media/{filename}"
 
         # Add the new shot to the project and save
         project.shots.append(new_shot)
@@ -162,7 +200,7 @@ class ProjectService:
         # Optionally, delete the associated media file
         if shot_to_delete.output_url:
             # Convert URL path to filesystem path
-            # Example URL: /media/my_project/shot1.png
+            # Example URL: /projects/my_project/media/shot1.png
             relative_path = shot_to_delete.output_url.strip('/')
             file_path = os.path.join(self.project_root, relative_path)
             if os.path.exists(file_path):

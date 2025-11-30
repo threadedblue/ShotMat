@@ -106,7 +106,7 @@ class FluxImg2ImgService:
         image_bytes = buffered.getvalue()
 
         # The project service handles file I/O and directory creation.
-        # We need to find the shot to update its output URL.
+        # We need to find the shot to update its output URL. The URL should be relative.
         try:
             project = self.project_service.load_project(project_name)
             shot_to_update = next((s for s in project.shots if s.id == shot_id), None)
@@ -119,8 +119,8 @@ class FluxImg2ImgService:
             shot_to_update = Shot(id=shot_id, input_text=prompt, mlx_args={}, output_url="")
             project = self.project_service.create_project_with_shot(project_name, shot_to_update)
 
-        # Save the media file and get its URL
-        media_url = self.project_service.save_shot_media(project_name, shot_id, image_bytes)
+        # Save the media file and get its relative URL path
+        media_url = self.project_service.save_shot_media(project_name, shot_id, image_bytes, image_ext=".png")
         shot_to_update.output_url = media_url
 
         # Persist the updated project data
